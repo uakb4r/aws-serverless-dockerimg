@@ -1,2 +1,16 @@
-FROM node:16.13.0-slim
-RUN apt update -y && apt install python3-pip -y && pip3 install awscliv2 && pip3 install awsume==3.2.9 && npm i -g serverless
+FROM node:lts-stretch-slim
+RUN apt-get update && \
+    apt-get install -y \
+        unzip \
+        curl \
+    && apt-get clean \
+    && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
+    && unzip awscliv2.zip \
+    && ./aws/install \
+    && rm -rf \
+        awscliv2.zip \
+    && apt-get -y purge curl \
+    && apt-get -y purge unzip
+RUN apt install python3-pip -y && pip3 install awsume
+RUN npm i -g serverless@latest
+CMD ["/bin/bash"]
